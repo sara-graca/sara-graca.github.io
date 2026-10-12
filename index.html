@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Sara Graça: NLP, speech and multilingual machine learning.">
+<title>Sara Graça</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Silkscreen&family=Noto+Sans+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one long scroll; colour picker is a first "screen" in the same style; pixel screens framed with hard offset shadows in the chosen hue + complement */
+:root{
+  --h:265;
+  --h2:calc(var(--h) + 180);
+  --bg:hsl(var(--h) 45% 97%);
+  --surface:hsl(var(--h) 40% 93%);
+  --ink:hsl(var(--h) 40% 11%);
+  --muted:hsl(var(--h) 14% 36%);
+  --line:hsl(var(--h) 22% 84%);
+  --a:hsl(var(--h) 72% 54%);
+  --b:hsl(var(--h2) 72% 48%);
+  --a-text:hsl(var(--h) 75% 32%);
+  --b-text:hsl(var(--h2) 80% 28%);
+  --a-soft:hsl(var(--h) 85% 90%);
+  --b-soft:hsl(var(--h2) 85% 89%);
+  --screen:hsl(var(--h) 30% 9%);
+  --f-display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-pixel:"Silkscreen", "Courier New", monospace;
+  --f-mono:"Noto Sans Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:hsl(var(--h) 25% 8%); --surface:hsl(var(--h) 22% 13%); --ink:hsl(var(--h) 30% 93%);
+  --muted:hsl(var(--h) 14% 68%); --line:hsl(var(--h) 18% 23%);
+  --a:hsl(var(--h) 78% 63%); --b:hsl(var(--h2) 78% 60%);
+  --a-text:hsl(var(--h) 85% 77%); --b-text:hsl(var(--h2) 85% 74%);
+  --a-soft:hsl(var(--h) 40% 22%); --b-soft:hsl(var(--h2) 40% 20%);
+  --screen:hsl(var(--h) 30% 6%); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:hsl(var(--h) 25% 8%); --surface:hsl(var(--h) 22% 13%); --ink:hsl(var(--h) 30% 93%);
+  --muted:hsl(var(--h) 14% 68%); --line:hsl(var(--h) 18% 23%);
+  --a:hsl(var(--h) 78% 63%); --b:hsl(var(--h2) 78% 60%);
+  --a-text:hsl(var(--h) 85% 77%); --b-text:hsl(var(--h2) 85% 74%);
+  --a-soft:hsl(var(--h) 40% 22%); --b-soft:hsl(var(--h2) 40% 20%);
+  --screen:hsl(var(--h) 30% 6%); color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;padding-inline:16px;padding-block:0 48px}
+body.locked{overflow:hidden}
+a{color:var(--a-text);text-underline-offset:3px}
+a:hover{color:var(--b-text)}
+:focus-visible{outline:3px solid var(--b);outline-offset:3px}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;line-height:1.05;margin:0}
+p{margin:0}
+.wrap{max-width:1120px;margin-inline:auto}
+.pix{font-family:var(--f-pixel);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.eyebrow{color:var(--b-text)}
+.big-title{font-size:clamp(38px,5.5vw,64px);font-weight:800;letter-spacing:-.02em}
+.big-title em{font-style:normal;color:var(--a-text)}
+.intro{font-size:16px;max-width:56ch}
+.ctas{display:flex;gap:14px;flex-wrap:wrap}
+.screen{border:3px solid var(--ink);background:var(--screen)}
+.screen canvas{display:block;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges}
+
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--f-body);font-weight:700;font-size:16px;padding:12px 20px;border:3px solid var(--ink);background:var(--a);color:#fff;text-decoration:none;cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:transform .12s, box-shadow .12s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--b);color:#fff}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn.ghost{background:var(--bg);color:var(--ink)}
+.btn.ghost:hover{color:var(--ink)}
+
+/* ---------- header (shared by picker + site) ---------- */
+.bar{border-bottom:2px solid var(--ink);margin-inline:-16px;padding-inline:16px;background:var(--bg)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px;flex-wrap:wrap}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10}
+.logo{font-family:var(--f-pixel);font-size:15px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:8px}
+.logo i{display:inline-block;width:12px;height:12px;background:var(--a);box-shadow:12px 0 0 var(--b);margin-right:14px}
+nav{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+nav a{font-family:var(--f-pixel);font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);text-decoration:none;padding:6px 10px}
+nav a:hover{background:var(--a-soft);color:var(--ink)}
+.recolour{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-pixel);font-size:12px;text-transform:uppercase;letter-spacing:.06em;background:var(--bg);color:var(--ink);border:2px solid var(--ink);padding:5px 10px;cursor:pointer}
+.recolour span{width:14px;height:14px;background:linear-gradient(90deg,var(--a) 50%,var(--b) 50%)}
+
+/* ---------- colour picker ---------- */
+#gate{position:fixed;inset:0;z-index:50;background:var(--bg);overflow:auto;padding-inline:16px;transition:opacity .4s ease, visibility .4s}
+#gate.gone{opacity:0;visibility:hidden}
+.gate-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);gap:48px;align-items:center;padding-block:56px}
+@media (max-width:820px){.gate-body{grid-template-columns:minmax(0,1fr);gap:32px;padding-block:32px}}
+.gate-text{display:grid;gap:22px;min-width:0}
+.readout{display:flex;gap:10px;flex-wrap:wrap}
+.swatch{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:14px;padding:8px 12px;border:2px solid var(--ink);background:var(--bg);font-variant-numeric:tabular-nums}
+.swatch i{width:18px;height:18px;border:2px solid var(--ink)}
+.swatch.a{box-shadow:3px 3px 0 var(--a)}.swatch.a i{background:var(--a)}
+.swatch.b{box-shadow:3px 3px 0 var(--b)}.swatch.b i{background:var(--b)}
+.wheelcol{display:grid;gap:22px;justify-items:start;min-width:0;width:100%;max-width:320px;justify-self:center}
+.wheelscreen{box-shadow:8px 8px 0 var(--b);width:100%;margin-bottom:6px}
+#wheel{cursor:crosshair;touch-action:none}
+.hint{font-size:14px;color:var(--muted)}
+
+/* ---------- hero ---------- */
+.hero{padding-block:48px 20px;display:grid;grid-template-columns:auto auto;justify-content:start;gap:28px clamp(40px,8vw,120px);align-items:center}
+.hero-text{display:grid;gap:18px;min-width:0}
+.me-wrap{position:relative;width:max-content;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.me{display:block;width:144px;height:162px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(5px 5px 0 var(--b));transition:transform .15s steps(2)}
+.me-wrap.on .me{transform:translateY(-6px)}
+.hello{position:absolute;left:calc(100% - 18px);top:-14px;white-space:nowrap;font-family:var(--f-pixel),var(--f-mono);font-size:13px;letter-spacing:.04em;background:var(--bg);color:var(--ink);border:3px solid var(--ink);padding:5px 10px;box-shadow:3px 3px 0 var(--a);opacity:0;transform:translateY(6px);transition:opacity .12s, transform .15s steps(2);pointer-events:none}
+.hello::after{content:"";position:absolute;left:8px;bottom:-9px;width:9px;height:9px;background:var(--bg);border-right:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:rotate(45deg)}
+.me-wrap.on .hello{opacity:1;transform:none}
+@media (max-width:640px){.hero{grid-template-columns:minmax(0,1fr)}.me-wrap{order:-1;margin-top:18px}.me{width:96px;height:108px}}
+@media (prefers-reduced-motion: reduce){.me,.hello{transition:none}}
+.ipa{font-family:var(--f-mono);font-size:15px;color:var(--muted)}
+.keys{font-family:var(--f-mono);font-size:14px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
+.keys span+span::before{content:"|";color:var(--b-text);margin-right:12px}
+.ipa b{color:var(--b-text);font-weight:500}
+
+/* ---------- sections ---------- */
+section.block{padding-block:72px 8px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:32px;border-bottom:2px solid var(--ink);padding-bottom:12px}
+.sec-head h2{font-size:clamp(26px,3vw,36px);font-weight:800}
+.sec-head p{color:var(--muted);max-width:48ch}
+
+/* ---------- projects ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:30px 26px}
+.card{display:grid;gap:12px;align-content:start}
+@media (max-width:480px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 16px}}
+.card .screen{display:block;box-shadow:4px 4px 0 var(--a);transition:transform .15s, box-shadow .15s}
+.card:nth-child(4n+2) .screen,.card:nth-child(4n+3) .screen{box-shadow:4px 4px 0 var(--b)}
+.card:hover .screen{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--b)}
+.card:nth-child(4n+2):hover .screen,.card:nth-child(4n+3):hover .screen{box-shadow:6px 6px 0 var(--a)}
+.card canvas{aspect-ratio:3/2}
+.card .txt{display:grid;gap:6px;min-width:0}
+.card h3{font-size:15px;font-weight:700;overflow-wrap:anywhere;line-height:1.15}
+.card h3 a{color:var(--ink);text-decoration:none}
+.card h3 a:hover{color:var(--a-text);text-decoration:underline}
+.card .desc{font-size:15px;line-height:1.55}
+.card .lang{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+
+/* ---------- CV ---------- */
+.profile{font-size:clamp(18px,2.2vw,22px);max-width:60ch;margin-bottom:48px}
+.cv{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:56px}
+@media (max-width:820px){.cv{grid-template-columns:minmax(0,1fr);gap:40px}}
+.cv h3{font-family:var(--f-pixel);font-size:13px;font-weight:400;text-transform:uppercase;letter-spacing:.08em;color:var(--b-text);margin-bottom:16px}
+.timeline{display:grid;gap:26px;margin-bottom:44px}
+.entry{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px}
+@media (max-width:480px){.entry{grid-template-columns:minmax(0,1fr);gap:4px}}
+.entry .when{font-family:var(--f-mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;padding-top:3px}
+.entry h4{font-size:16px}
+.entry .where{color:var(--a-text);font-weight:700;font-size:15px;margin-top:4px}
+.entry .note{font-size:15px;color:var(--muted);margin-top:4px}
+.entry ul{margin:8px 0 0;padding-left:18px;font-size:15.5px;display:grid;gap:4px;max-width:62ch}
+.entry li::marker{color:var(--a-text)}
+code{font-family:var(--f-mono);font-size:.9em;background:var(--a-soft);padding:0 4px}
+.skills{display:grid;gap:22px;margin-bottom:44px}
+.skillgroup h4{margin-bottom:8px;font-size:15px}
+.skillgroup ul{list-style:none;margin:0;padding:0;display:flex;gap:6px;flex-wrap:wrap}
+.skillgroup li{font-family:var(--f-mono);font-size:13px;padding:3px 9px;border:2px solid var(--ink);background:var(--bg)}
+.skillgroup:nth-child(odd) li{box-shadow:2px 2px 0 var(--a)}
+.skillgroup:nth-child(even) li{box-shadow:2px 2px 0 var(--b)}
+.langs{display:grid;gap:12px}
+.langrow{display:grid;grid-template-columns:minmax(0,1fr) auto 52px;gap:12px;align-items:center}
+.langrow .name{font-weight:700}
+.meter{display:flex;gap:3px}
+.meter i{width:12px;height:12px;border:2px solid var(--ink);background:transparent}
+.meter i.on{background:var(--a)}
+.langrow:nth-child(even) .meter i.on{background:var(--b)}
+.langrow .lvl{font-family:var(--f-mono);font-size:13px;color:var(--muted);text-align:right}
+.scale{font-family:var(--f-mono);font-size:12px;color:var(--muted);margin-top:10px}
+
+/* ---------- contact ---------- */
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:18px}
+.linkrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border:3px solid var(--ink);background:var(--bg);text-decoration:none;color:var(--ink);box-shadow:4px 4px 0 var(--a);min-width:0;flex-wrap:wrap}
+.linkrow:nth-child(even){box-shadow:4px 4px 0 var(--b)}
+.linkrow .k{font-family:var(--f-pixel);font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.linkrow .v{font-family:var(--f-mono);font-size:15px;overflow-wrap:anywhere;user-select:all}
+.linkrow .r{display:flex;align-items:center;gap:10px;min-width:0}
+a.linkrow:hover{transform:translate(-2px,-2px);color:var(--ink)}
+.copy{font-family:var(--f-pixel);font-size:11px;text-transform:uppercase;letter-spacing:.06em;border:2px solid var(--ink);background:var(--a-soft);color:var(--ink);padding:3px 8px;cursor:pointer}
+footer{margin-top:80px;padding-top:16px;border-top:2px solid var(--ink);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:14px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+  <div class="bar"><div class="wrap"><span class="logo"><i></i>sara graça</span><span class="pix" style="color:var(--muted)">choose a hue</span></div></div>
+  <div class="wrap gate-body">
+    <div class="gate-text">
+      <h2 class="big-title" id="gate-title">Pick a <em>colour.</em></h2>
+      <p class="intro">The site will use this colour and its complement.</p>
+      <div class="ctas">
+        <button class="btn" id="enter" type="button">Enter →</button>
+        <button class="btn ghost" id="surprise" type="button">Surprise me</button>
+      </div>
+      <p class="hint">Click or drag on the wheel. Arrow keys work too.</p>
+    </div>
+    <div class="wheelcol">
+      <div class="screen wheelscreen"><canvas id="wheel" width="64" height="64" tabindex="0" role="slider" aria-label="Hue" aria-valuemin="0" aria-valuemax="359" aria-valuenow="265"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<header class="top bar">
+  <div class="wrap">
+    <a class="logo" href="#home"><i></i>sara graça</a>
+    <nav aria-label="Sections">
+      <a href="#projects">Projects</a>
+      <a href="#cv">CV</a>
+      <a href="#contact">Contact</a>
+      <button class="recolour" id="recolour" type="button"><span></span>Colour</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="home">
+  <section class="hero">
+   <div class="hero-text">
+    <h1 class="big-title">Sara <em>Graça</em></h1>
+    <p class="ipa">/<b>ˈsa.ɾɐ ˈɡɾa.sɐ</b>/</p>
+    <p class="keys"><span>NLP</span><span>LLMs</span><span>RAG</span><span>Speech recognition</span><span>Multilingual models</span></p>
+    <div class="ctas" style="margin-top:6px">
+      <a class="btn" href="#projects">See the projects</a>
+      <a class="btn ghost" href="https://github.com/sara-graca" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+   </div>
+   <div class="me-wrap" id="mewrap"><canvas class="me" id="me" width="32" height="36" role="img" aria-label="Pixel-art portrait of Sara Graça"></canvas><span class="hello" id="hello" aria-hidden="true">olá!</span></div>
+  </section>
+
+  <section class="block" id="projects">
+    <div class="sec-head"><h2>Projects</h2></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="block" id="cv">
+    <div class="sec-head"><h2>CV</h2></div>
+    <div class="cv">
+      <div>
+        <h3>Education</h3>
+        <div class="timeline">
+          <div class="entry"><div class="when">2025–2027</div><div>
+            <h4>M1–M2 Computational Linguistics</h4>
+            <div class="where">Université Paris Cité · Paris</div>
+            <p class="note">M1 grade 17.6/20. Courses in RAG and AI agents, theory and practice of LLMs, machine learning for NLP, graph algorithms.</p></div></div>
+          <div class="entry"><div class="when">2022–2025</div><div>
+            <h4>Bachelor’s in Translation</h4>
+            <div class="where">NOVA FCSH · Lisbon</div>
+            <p class="note">Portuguese, English and French. Grade 19/20. Merit scholarship; organised conferences.</p></div></div>
+          <div class="entry"><div class="when">2020–2022</div><div>
+            <h4>Applied Mathematics and Computation</h4>
+            <div class="where">Instituto Superior Técnico · Lisbon</div>
+            <p class="note">Two years of the bachelor’s programme.</p></div></div>
+        </div>
+        <h3>Experience</h3>
+        <div class="timeline">
+          <div class="entry"><div class="when">May–Jul 2026</div><div>
+            <h4>Research Internship</h4>
+            <div class="where">LACITO, CNRS · Paris</div></div></div>
+        </div>
+      </div>
+      <div>
+        <h3>Toolbox</h3>
+        <div class="skills">
+          <div class="skillgroup"><h4>Programming &amp; tools</h4><ul><li>Python</li><li>Git</li><li>DVC</li></ul></div>
+          <div class="skillgroup"><h4>ML &amp; NLP</h4><ul><li>PyTorch</li><li>Hugging Face Transformers</li><li>spaCy</li><li>scikit-learn</li><li>KenLM</li><li>fine-tuning</li></ul></div>
+          <div class="skillgroup"><h4>Speech &amp; audio</h4><ul><li>ASR</li><li>wav2vec2 / XLS-R</li><li>Whisper</li><li>librosa</li><li>soundfile</li><li>torchaudio</li></ul></div>
+          <div class="skillgroup"><h4>LLMs &amp; RAG</h4><ul><li>retrieval-augmented generation</li><li>LLM evaluation</li></ul></div>
+        </div>
+        <h3>Languages</h3>
+        <div class="langs" id="langs"></div>      </div>
+    </div>
+  </section>
+
+  <section class="block" id="contact">
+    <div class="sec-head"><h2>Contact</h2></div>
+    <div>
+      <div class="links">
+        <div class="linkrow"><span class="k">Email</span><span class="r"><a class="v" href="mailto:saravsgraca@gmail.com" style="color:var(--ink);text-decoration:none">saravsgraca@gmail.com</a><button class="copy" id="copy" type="button">Copy</button></span></div>
+        <a class="linkrow" href="https://github.com/sara-graca" target="_blank" rel="noopener"><span class="k">GitHub</span><span class="v">github.com/sara-graca ↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Sara Graça · Paris</span>
+  </footer>
+</main>
+
+<script>
+(function(){
+const root=document.documentElement;
+const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let hue=265;
+try{const s=localStorage.getItem('sg-hue');if(s!==null&&!isNaN(+s))hue=+s}catch(e){}
+
+/* ---------------- projects ---------------- */
+const P=[
+ {n:'deepfake_detection',url:'https://github.com/luchia0602/deepfake_detection',d:'Group project. Comparing handcrafted and deep audio features for detecting AI-generated Portuguese speech.',l:'Python',art:'deepfake',alt:'A robot in a fake nose and moustache, caught by a magnifying glass.'},
+ {n:'rag-pipeline',d:'End-to-end RAG system: PDF parsing, retrievers for both text and SQL data, a chatbot, and an evaluation pipeline that measures retrieval and answer quality.',l:'Python',art:'rag',alt:'A bookshelf, a database and a chat bubble, with a book flying to the answer.'},
+ {n:'mBERT-language-neurons',d:'Re-implementing Tang et al. (2024) on mBERT, using language activation probability entropy to look for language-specific neurons.',l:'Jupyter',art:'neurons',alt:'A grid of neurons; different ones light up for each language.'},
+ {n:'vowel-statistical-analysis',d:'Analysing properties of the vowel inventories of languages around the world.',l:'Jupyter',art:'vowels',alt:'Vowels plotted on the vowel trapezoid.'},
+ {n:'lowresource-xlsr-finetune',d:'Fine-tuning XLS-R (wav2vec2-large-xlsr-53) for low-resource ASR: dataset building, prediction, and conversion to and from ELAN and Pangloss formats. Built for Thulung.',l:'Python',art:'hungry',alt:'A hungry robot with a fork, dreaming of data, facing a plate with one crumb.'},
+ {n:'elan-pangloss',d:'Two-way converters between ELAN .eaf files and the Pangloss XML format.',l:'Python',art:'convert',alt:'Two documents with arrows going both ways.'},
+ {n:'mBERT-fine-tuning',d:'Cross-lingual PoS tagging with mBERT across five typologically diverse languages: French, Turkish, Chinese, Finnish and Hebrew. Includes UD preprocessing and multiword-token fusion.',l:'Jupyter',art:'tags',alt:'Five words each getting a tag stuck on top.'},
+ {n:'dyck-language-transformer',d:'Transformer for Dyck language detection and correction, trained on synthetic bracket sequences with four error types. One shared encoder, two heads.',l:'Jupyter',art:'dyck',alt:'A row of brackets with a mismatched pair being fixed.'},
+ {n:'acoustic-vs-neural-representations',d:'Statistical comparison of acoustic features and neural speech representations (Whisper, XLS-R) on a French L1/L2 corpus: which captures phonological structure better?',l:'Jupyter',art:'versus',alt:'A waveform versus a neural network.'},
+ {n:'numerical-stability',d:'How reducing numerical precision changes the structure of wav2vec2 speech embeddings, measured through word-level speaker distances in a bilingual corpus.',l:'Python',art:'bits',alt:'A smooth curve and a blocky version that gets coarser as bits drop.'},
+ {n:'parallel-vocab-distribution',d:'Profiling sequential and parallel implementations of computing the vocabulary distribution of a corpus.',l:'Python',art:'race',alt:'One slow runner versus four fast ones, next to a word-frequency histogram.'},
+ {n:'poetry-transformer-decoder',d:'A GPT-style model that writes poetry, trained on Victorian verse from Project Gutenberg.',l:'Jupyter',art:'poet',alt:'A quill writing on a page next to a top hat.'},
+ {n:'phoneme-asr-noise-robustness',d:'A reproducible DVC pipeline that tests how well wav2vec2 phoneme ASR holds up under noise, across several languages.',l:'Python',art:'umbrella',alt:'An ear sheltering under an umbrella from falling noise.'}
+];
+const NAMES={'deepfake_detection':'Audio deepfake detection','rag-pipeline':'RAG pipeline','mBERT-language-neurons':'mBERT language neurons','vowel-statistical-analysis':'Vowel statistical analysis',
+ 'lowresource-xlsr-finetune':'Lowresource XLS-R finetune','elan-pangloss':'ELAN–Pangloss converters','mBERT-fine-tuning':'mBERT fine-tuning',
+ 'dyck-language-transformer':'Dyck language transformer','acoustic-vs-neural-representations':'Acoustic vs neural representations',
+ 'numerical-stability':'Numerical stability','parallel-vocab-distribution':'Parallel vocab distribution',
+ 'poetry-transformer-decoder':'Poetry transformer decoder','phoneme-asr-noise-robustness':'Phoneme ASR noise robustness'};
+const ORDER=['lowresource-xlsr-finetune','elan-pangloss','deepfake_detection','rag-pipeline','mBERT-language-neurons','phoneme-asr-noise-robustness','acoustic-vs-neural-representations',
+ 'mBERT-fine-tuning','poetry-transformer-decoder','numerical-stability','dyck-language-transformer','vowel-statistical-analysis','parallel-vocab-distribution'];
+P.sort((a,b)=>ORDER.indexOf(a.n)-ORDER.indexOf(b.n));
+const grid=document.getElementById('grid');
+P.forEach(p=>{
+  const el=document.createElement('article');el.className='card';
+  const url=p.url||'https://github.com/sara-graca/'+p.n;
+  el.innerHTML=`<a class="screen" href="${url}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><canvas width="48" height="32" data-art="${p.art}"></canvas></a>
+  <div class="txt"><h3><a href="${url}" target="_blank" rel="noopener">${NAMES[p.n]}</a></h3>
+</div>`;
+  el.querySelector('canvas').setAttribute('aria-label',p.alt);
+  grid.appendChild(el);
+});
+
+/* ---------------- languages ---------------- */
+const LV=['A1','A2','B1','B2','C1','C2'];
+[['Portuguese',6,'native'],['English',6,'C2'],['French',5,'C1'],['Japanese',2,'A2']].forEach(([n,v,lab])=>{
+  const r=document.createElement('div');r.className='langrow';
+  r.innerHTML=`<span class="name">${n}</span><span class="meter" aria-hidden="true">${LV.map((_,i)=>`<i class="${i<v?'on':''}"></i>`).join('')}</span><span class="lvl">${lab}</span>`;
+  document.getElementById('langs').appendChild(r);
+});
+document.getElementById('copy').addEventListener('click',e=>{
+  const b=e.currentTarget;const t='saravsgraca@gmail.com';
+  const done=()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1500)};
+  try{navigator.clipboard.writeText(t).then(done,()=>{selectEmail()})}catch(err){selectEmail()}
+  function selectEmail(){const s=window.getSelection(),rg=document.createRange();rg.selectNodeContents(b.previousElementSibling);s.removeAllRanges();s.addRange(rg)}
+});
+
+/* ---------------- pixel engine ---------------- */
+let PAL={};
+function makePal(h){const h2=h+180;return{
+ K:`hsl(${h} 30% 9%)`,k:`hsl(${h} 25% 18%)`,g:`hsl(${h} 12% 52%)`,w:`hsl(${h} 35% 95%)`,
+ p:`hsl(${h} 75% 58%)`,P:`hsl(${h} 60% 36%)`,q:`hsl(${h} 90% 80%)`,
+ c:`hsl(${h2} 75% 56%)`,C:`hsl(${h2} 60% 34%)`,d:`hsl(${h2} 90% 80%)`};}
+function G(ctx){
+ const r=(x,y,w,h,c)=>{ctx.fillStyle=PAL[c]||c;ctx.fillRect(x|0,y|0,w,h)};
+ const px=(x,y,c)=>r(x,y,1,1,c);
+ const spr=(x,y,rows)=>rows.forEach((row,j)=>{for(let i=0;i<row.length;i++){const ch=row[i];if(ch!=='.')r(x+i,y+j,1,1,ch)}});
+ const line=(x0,y0,x1,y1,c)=>{let dx=Math.abs(x1-x0),sx=x0<x1?1:-1,dy=-Math.abs(y1-y0),sy=y0<y1?1:-1,e=dx+dy;
+   for(;;){px(x0,y0,c);if(x0===x1&&y0===y1)break;const e2=2*e;if(e2>=dy){e+=dy;x0+=sx}if(e2<=dx){e+=dx;y0+=sy}}};
+ return{r,px,spr,line};
+}
+const rnd=s=>{const x=Math.sin(s*127.1+311.7)*43758.5453;return x-Math.floor(x)};
+const GLYPH={'(':['.xx','x..','x..','x..','x..','x..','.xx'],')':['xx.','..x','..x','..x','..x','..x','xx.'],
+ '[':['xxx','x..','x..','x..','x..','x..','xxx'],']':['xxx','..x','..x','..x','..x','..x','xxx'],
+ '{':['.xx','.x.','.x.','x..','.x.','.x.','.xx'],'}':['xx.','.x.','.x.','..x','.x.','.x.','xx.'],
+ 'V':['x.x','x.x','x.x','x.x','.x.'],'S':['xxx','x..','xxx','..x','xxx']};
+function glyph(g,ch,x,y,s,c){GLYPH[ch].forEach((row,j)=>{for(let i=0;i<row.length;i++)if(row[i]==='x')g.r(x+i*s,y+j*s,s,s,c)})}
+
+const ART={
+ deepfake(g,t,k){
+  g.r(0,0,48,32,'K');g.r(0,28,48,4,'k');
+  g.r(11,2,2,4,'P');g.r(10,1,4,2,k%4<2?'c':'C');
+  g.r(4,6,16,16,'p');g.r(5,6,14,1,'q');g.r(19,7,1,15,'P');
+  g.r(6,10,5,4,'K');g.r(13,10,5,4,'K');g.r(7,11,3,2,'w');g.r(14,11,3,2,'w');g.r(11,11,2,1,'K');
+  g.r(11,13,2,3,'d');g.r(8,17,8,2,'K');g.px(7,18,'K');g.px(16,18,'K');
+  g.r(7,22,10,6,'P');g.r(9,24,6,2,'k');
+  for(let i=0;i<3;i++){const h=3+i*3,x=22+i*3;if((k+i)%4!==0)g.r(x,18-(h>>1),1,h,'c')}
+  g.r(34,10,9,7,'k');g.r(35,9,7,9,'k');
+  g.spr(33,8,['...wwwww...','.ww.....ww.','.w.......w.','w.........w','w.........w','w.........w','w.........w','w.........w','.w.......w.','.ww.....ww.','...wwwww...']);
+  if(k%4<2){g.r(38,10,1,4,'c');g.px(38,15,'c')}
+  g.line(42,18,46,23,'P');g.line(43,18,47,23,'P');g.line(42,19,46,24,'P');
+ },
+ hungry(g,t,k){
+  g.r(0,0,48,32,'K');g.r(0,27,48,5,'k');
+  g.r(26,1,19,9,'w');g.r(25,2,21,7,'w');
+  [3,5,7].forEach((y,i)=>{for(let x=28;x<43;x+=3)g.r(x,y,2,1,(i+x)%2?'p':'c')});
+  g.r(23,11,2,2,'w');g.px(21,14,'w');
+  g.r(10,6,1,3,'P');g.r(9,4,3,2,k%4<2?'c':'C');
+  g.r(3,9,15,10,'p');g.r(4,9,13,1,'q');g.r(17,10,1,9,'P');
+  if(k%24===0){g.r(5,13,4,1,'K');g.r(11,13,4,1,'K')}
+  else{g.r(5,11,4,3,'w');g.r(11,11,4,3,'w');g.r(7,12,2,2,'K');g.r(13,12,2,2,'K')}
+  g.r(6,15,9,3,'K');g.r(8,17,5,1,'c');
+  g.r(13,18,1,1+(k%6<3?1:2),'d');
+  g.r(5,19,11,8,'P');g.r(7,21,7,3,'k');g.r(9,22,3,1,k%2?'c':'d');
+  g.r(16,21,6,2,'p');g.r(22,17,1,6,'w');g.r(21,15,1,3,'w');g.r(23,15,1,3,'w');g.r(21,17,3,1,'w');
+  g.r(27,23,17,2,'g');g.r(29,25,2,2,'g');g.r(40,25,2,2,'g');
+  g.r(29,22,13,1,'w');g.r(31,21,9,1,'w');
+  g.px(35,20,'c');
+  if(k%6<3){g.px(35,18,'d');g.px(37,19,'d');g.px(33,19,'d')}
+ },
+ rag(g,t,k){
+  g.r(0,0,48,32,'K');
+  g.r(2,3,17,26,'P');
+  const books=[[2,5,'p'],[3,6,'c'],[2,4,'q'],[2,6,'d'],[3,5,'w'],[2,6,'p']];
+  [4,12,20].forEach((y,s)=>{g.r(3,y,15,7,'k');let x=4;
+    books.forEach((b,i)=>{const bb=books[(i+s*2)%books.length];if(x+bb[0]>17)return;
+      if(!(s===1&&i===3))g.r(x,y+7-bb[1],bb[0],bb[1],bb[2]);x+=bb[0]+(i%2)})});
+  g.r(27,3,19,13,'w');g.r(30,16,3,1,'w');g.px(30,17,'w');
+  g.r(30,6,13,1,'g');g.r(30,9,9,1,'g');g.r(30,12,Math.min(12,k%30),1,'c');
+  g.r(29,21,12,8,'C');g.r(30,20,10,1,'c');g.r(29,21,12,1,'c');g.r(29,24,12,1,'d');g.r(29,27,12,1,'d');
+  const f=(t*.35)%1;const x=Math.round(13+f*17),y=Math.round(15-Math.sin(f*Math.PI)*12);
+  g.r(x,y,3,4,'q');g.px(x+1,y+1,'P');
+ },
+ neurons(g,t,k){
+  g.r(0,0,48,32,'K');
+  const L=Math.floor(t/1.6)%3,cols=['p','c','q'];
+  for(let i=0;i<8;i++)for(let j=0;j<5;j++){
+    const x=4+i*5,y=2+j*5;
+    if(i<7)g.r(x+3,y+1,2,1,'k');if(j<4)g.r(x+1,y+3,1,2,'k');
+    const shared=(i*3+j*5)%11===0;
+    const on=rnd(i*31+j*17+L*7)<.2;
+    g.r(x,y,3,3,shared?'w':on?cols[L]:'k');
+  }
+  for(let l=0;l<3;l++)g.r(12+l*9,27,6,3,cols[l]);
+  g.r(12+L*9,31,6,1,'w');
+ },
+ vowels(g,t,k){
+  g.r(0,0,48,32,'K');
+  g.line(6,4,42,4,'g');g.line(42,4,42,28,'g');g.line(42,28,20,28,'g');g.line(20,28,6,4,'g');
+  const V=[[7,5],[39,5],[12,12],[38,12],[16,19],[38,20],[22,26]];
+  V.forEach(([x,y],i)=>{for(let n=0;n<6;n++){const dx=Math.round((rnd(i*9+n)-.5)*6),dy=Math.round((rnd(i*13+n+50)-.5)*4);
+    const X=x+dx,Y=y+dy;if(X>6&&X<42&&Y>4&&Y<28)g.px(X,Y,'P')}});
+  const hi=k%(V.length*2)>>1;
+  V.forEach(([x,y],i)=>g.r(x,y,2,2,i===hi?'d':'c'));
+ },
+ convert(g,t,k){
+  g.r(0,0,48,32,'K');
+  g.r(3,5,15,21,'w');g.r(3,5,15,3,'p');
+  [[10,[[5,4,'p'],[10,6,'c']]],[14,[[5,7,'c'],[13,3,'p']]],[18,[[5,3,'p'],[9,7,'p']]],[22,[[5,10,'c']]]]
+   .forEach(([y,segs])=>segs.forEach(([x,w,c])=>g.r(x,y,w,2,c)));
+  g.r(30,5,15,21,'w');g.r(30,5,15,3,'c');
+  [10,14,18,22].forEach((y,i)=>{g.px(33,y,'C');g.px(32,y+1,'C');g.px(33,y+2,'C');g.r(35,y+1,4+(i*3)%6,1,'g');g.px(42,y,'C');g.px(43,y+1,'C');g.px(42,y+2,'C')});
+  const o=k%7;
+  g.r(20,12,7,1,'k');g.px(20+o,12,'q');g.px(26,11,'q');g.px(27,12,'q');g.px(26,13,'q');
+  g.r(21,18,7,1,'k');g.px(27-o,18,'d');g.px(21,17,'d');g.px(20,18,'d');g.px(21,19,'d');
+ },
+ tags(g,t,k){
+  g.r(0,0,48,32,'K');g.r(0,26,48,6,'k');
+  const W=[7,5,9,6,8];let x=4;const shown=Math.floor(k/4)%9;
+  W.forEach((w,i)=>{
+    g.r(x,20,w,5,'w');for(let s=x+1;s<x+w-1;s+=2)g.px(s,22,'g');
+    g.r(x,25,w,1,['p','c','q','d','g'][i]);
+    if(i<shown){const cx=x+(w>>1);g.r(cx,14,1,6,'g');const tc=i%2?'c':'p';g.r(cx-3,8,7,6,tc);g.px(cx,9,'K');
+      g.r(cx-2,11,5,1,i%2?'C':'P')}
+    x+=w+2;
+  });
+ },
+ dyck(g,t,k){
+  g.r(0,0,48,32,'K');
+  const fixed=Math.floor(t/1.4)%2===1;
+  const seq=fixed?'([{}])':'([{})]';
+  [...seq].forEach((ch,i)=>{const bad=i>=4;const jit=(!fixed&&bad&&k%2)?1:0;
+    glyph(g,ch,4+i*7,5+jit,2,bad?(fixed?'d':'c'):'q')});
+  if(fixed){g.line(20,26,22,28,'q');g.line(22,28,27,23,'q');g.line(21,26,23,28,'q')}
+  else{g.line(21,23,26,28,'c');g.line(26,23,21,28,'c')}
+ },
+ versus(g,t,k){
+  g.r(0,0,48,32,'K');
+  for(let x=2;x<20;x+=2){const a=Math.round(Math.abs(Math.sin(x*.55+t*4)*Math.sin(x*.18+.3))*9)+1;g.r(x,16-a,1,a*2,'p')}
+  glyph(g,'V',21,13,1,'w');glyph(g,'S',25,13,1,'w');
+  const L=[[30,[8,16,24]],[37,[5,12,20,27]],[44,[12,20]]];
+  for(let a=0;a<2;a++)L[a][1].forEach(y0=>L[a+1][1].forEach(y1=>g.line(L[a][0]+1,y0,L[a+1][0],y1,'k')));
+  const lit=k%9;let n=0;
+  L.forEach(([x,ys])=>ys.forEach(y=>{g.r(x-1,y-1,3,3,n===lit?'d':'c');n++}));
+ },
+ bits(g,t,k){
+  g.r(0,0,48,32,'K');
+  const lv=[1,2,4,8][Math.floor(t/1.5)%4];
+  const f=x=>17+Math.sin(x/7.3)*8+Math.sin(x/2.9)*2;
+  for(let x=0;x<48;x++)g.px(x,Math.round(f(x)),'P');
+  let prev=null;
+  for(let x=0;x<48;x++){const xq=Math.floor(x/lv)*lv;const y=Math.round(f(xq)/lv)*lv;
+    if(prev!==null&&prev!==y)g.line(x,prev,x,y,'c');g.px(x,y,'c');prev=y}
+  const n=8/lv;for(let i=0;i<8;i++)g.r(2+i*3,2,2,3,i<n?'q':'k');
+ },
+ race(g,t,k){
+  g.r(0,0,48,32,'K');
+  g.r(2,8,30,2,'k');const s=Math.floor(t*2.5)%27;g.r(2+s,5,3,3,'p');g.r(4+s,6,2,2,'q');g.px(1+s,7,'p');
+  [15,19,23,27].forEach((y,i)=>{g.r(2,y,30,1,'k');const p=Math.floor(t*14+i*7)%28;g.r(2+p,y-2,2,2,'c')});
+  [13,9,7,5,4,3].forEach((h,i)=>g.r(35+i*2,28-h,1,h,'q'));
+  g.r(34,28,13,1,'g');
+ },
+ poet(g,t,k){
+  g.r(0,0,48,32,'K');
+  g.r(4,4,26,24,'w');g.r(3,3,28,2,'q');g.r(3,27,28,2,'q');
+  const L=[20,16,22,14,19,12],tot=L.reduce((a,b)=>a+b,0);
+  let pr=Math.floor(t*9)%(tot+20),qx=6,qy=8;
+  L.forEach((len,i)=>{const y=8+i*3;const n=Math.max(0,Math.min(len,pr));
+    for(let x=0;x<n;x++)if((x+i*2)%6!==5)g.px(6+x,y,'P');
+    if(pr>0&&pr<=len){qx=6+n;qy=y}else if(pr>len&&i===L.length-1){qx=6+len;qy=y}
+    pr-=len});
+  for(let s=1;s<9;s++){g.r(qx+s,qy-s-1,2,1,'c');if(s>2)g.px(qx+s+2,qy-s-2,'d')}
+  g.px(qx,qy-1,'K');
+  g.r(36,13,8,9,'P');g.r(37,14,1,5,'p');g.r(36,19,8,2,'c');g.r(34,22,12,2,'P');
+ },
+ umbrella(g,t,k){
+  g.r(0,0,48,32,'K');
+  for(let i=0;i<40;i++){const x=Math.floor(rnd(i)*48),y=Math.floor(rnd(i+99)*32+k*2)%32;
+    if(x>9&&x<39&&y>=4)continue;g.r(x,y,1,2,i%3?'g':'d')}
+  for(let y=4;y<=11;y++){const hw=Math.round(Math.sqrt(1-((11-y)/8)**2)*14);
+    for(let x=24-hw;x<24+hw;x++)g.px(x,y,Math.floor((x-10)/7)%2?'C':'c')}
+  for(let x=11;x<38;x+=4)g.px(x,11,'K');
+  if(k%3===0){g.px(14,3,'d');g.px(30,2,'d');g.px(22,3,'d')}
+  g.r(24,12,1,10,'w');g.r(25,21,2,1,'w');g.px(26,20,'w');
+  g.spr(28,16,[
+   '..qqqqqq..','.qq....qq.','qq..pppp.q','q..p....qq','q..p..p..q','q.....pp.q',
+   'qq.....p.q','.q....p.qq','.qq..pp.q.','..qq...qq.','...q..qq..','...qqqq...']);
+ }
+};
+const canvases=[...document.querySelectorAll('canvas[data-art]')].map(c=>({c,ctx:c.getContext('2d'),fn:ART[c.dataset.art]}));
+
+
+
+
+/* ---------------- pixel portrait ---------------- */
+const ME=['................................','................................','............OOOOOOOO............','.........OOOHhhHHhhHOOO.........','........OHHHhHHHHHHhHHHO........','........OHHHHHHHHHHHHHHO........','.......OHHHHHHHhHHHHHHHHO.......','......OHHHHHhHHhHHHhHHHHHO......','......OHHHHHhHHHHHHhHHHHHO......','.....OHHHHHHHHHHHhHHHHHHHHO.....','.....OHHHHHHHhHHHhHHHHHHHHO.....','.....OHHHHDHHDHHDHHDHHHHHHO.....','....OHHHHHSSSSSSSSSSSSHHHHHO....','...OHHHHHHGGGGSSSSGGGGHHHHO.....','...OHHHhHGLSSSGGGGLSSDGHhHO.....','....OHHhHGDSESGSSGSESDGHhHHO....','....OHhHHGDSESGSSGSESDGHHhHO....','.....OhHHGDSSSGSSGSSSDGHHhHHO...','.....OHHHHGGGGSSSSGGGGHHHHHHO...','....OHHHHHDbSSSsSSSSbDHHHHHO....','....OHHhHHDSSSSSSSSSSDHHhHHO....','...OHHHhHHDHSSSMMSSSHDHHhHO.....','...OHHhHHHDOHSSSSSSHODHHHhO.....','....OHHHHHDOOOssssOOODHHHHHO....','....OHHHHHHO.OssssO.OHHHHHHO....','.....OHHHHHOOOssssOOOHHHHHHHO...','.....OHHhHHCCCCCCCCCCHHhHHHHO...','....OHHHhHHWWCCCCCCWWHHhHHHO....','..OOWHHhHHHWWWWWWWWWWHHHhHHWOO..','.OWWHHHHHHHWWWWWWWWWWHHHHHWWWWO.','OWWWWHHHHHHWWWWWWWWWWHHHHWWWWWWO','OWwWWWHHHHHWWWWWWWWWWHHHHHWWWwWO','OWwWWWWWWWWWWWWWWWWWWWWWWWWWWwWO','OWwWWWWWWWWWWWWWWWWWWWWWWWWWWwWO','OWwWWWWWWWWWWWWWWWWWWWWWWWWWWwWO','OWwWWWWWWWWWWWWWWWWWWWWWWWWWWwWO'];
+const MECOL={O:'#1c1418',H:'#3e2a22',h:'#624638',D:'#281b16',S:'#f2ceb8',s:'#deb098',b:'#ecaaa0',G:'#463a40',E:'#32241f',L:'#ffffff',M:'#c47a70',W:'#f6f3f0',w:'#d6d0cc'};
+let meSmile=false,meBlink=false;
+function drawMe(){const ctx=document.getElementById('me').getContext('2d');ctx.clearRect(0,0,32,36);
+  ME.forEach((row,y)=>{for(let x=0;x<row.length;x++){const ch=row[x];if(ch==='.')continue;ctx.fillStyle=ch==='C'?PAL.c:ch==='W'?PAL.p:ch==='w'?PAL.P:MECOL[ch];ctx.fillRect(x,y,1,1)}});
+  const p=(x,y,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,1,1)};
+  if(meSmile){p(14,20,MECOL.M);p(17,20,MECOL.M);p(15,21,MECOL.M);p(16,21,MECOL.M);p(11,19,'#e4928a');p(20,19,'#e4928a')}
+  if(meBlink){p(12,15,MECOL.S);p(19,15,MECOL.S);p(11,16,MECOL.E);p(13,16,MECOL.E);p(18,16,MECOL.E);p(20,16,MECOL.E)}
+}
+(function(){
+  const wrap=document.getElementById('mewrap'),hello=document.getElementById('hello');
+  const HI=['olá!','hi!','salut!','こんにちは!'];let i=0,tm=[];
+  function on(){if(wrap.classList.contains('on'))return;hello.textContent=HI[i++%HI.length];wrap.classList.add('on');meSmile=true;drawMe();
+    tm.push(setTimeout(()=>{meBlink=true;drawMe()},260),setTimeout(()=>{meBlink=false;drawMe()},420))}
+  function off(){tm.forEach(clearTimeout);tm=[];wrap.classList.remove('on');meSmile=false;meBlink=false;drawMe()}
+  wrap.addEventListener('mouseenter',on);wrap.addEventListener('mouseleave',off);
+  wrap.addEventListener('click',()=>{wrap.classList.contains('on')?off():on()});
+})();
+/* ---------------- pixel colour wheel ---------------- */
+const wheel=document.getElementById('wheel'),wctx=wheel.getContext('2d');
+const WN=64,CX=32,CY=32,R0=17,R1=30,RK=23.5;
+function drawWheel(){
+  wctx.clearRect(0,0,WN,WN);
+  wctx.fillStyle=PAL.K;wctx.fillRect(0,0,WN,WN);
+  for(let y=0;y<WN;y++)for(let x=0;x<WN;x++){
+    const dx=x+.5-CX,dy=y+.5-CY,r=Math.hypot(dx,dy);
+    let ang=Math.atan2(dx,-dy)*180/Math.PI;if(ang<0)ang+=360;
+    if(r>=R0&&r<=R1){const qh=Math.round(ang/12)*12;wctx.fillStyle=`hsl(${qh} 80% 60%)`;wctx.fillRect(x,y,1,1)}
+    else if(r<R0-3){wctx.fillStyle=dx<0?PAL.p:PAL.c;wctx.fillRect(x,y,1,1)}
+    else if(r<R0-2){wctx.fillStyle=PAL.w;wctx.fillRect(x,y,1,1)}
+  }
+  const knob=(h,solid)=>{const a=h*Math.PI/180;const kx=Math.round(CX+Math.sin(a)*RK-.5),ky=Math.round(CY-Math.cos(a)*RK-.5);
+    wctx.fillStyle=PAL.w;wctx.fillRect(kx-3,ky-3,7,7);
+    wctx.fillStyle=PAL.K;wctx.fillRect(kx-2,ky-2,5,5);
+    wctx.fillStyle=`hsl(${h} 80% 60%)`;wctx.fillRect(kx-1,ky-1,3,3);
+    if(!solid){wctx.fillStyle=PAL.K;[[-3,-3],[3,-3],[-3,3],[3,3]].forEach(([a,b])=>wctx.fillRect(kx+a,ky+b,1,1))}};
+  knob((hue+180)%360,false);knob(hue,true);
+}
+
+/* ---------------- loop ---------------- */
+// pictures stay still; only the one being hovered (or focused) animates
+const STILL=2.5;
+const active=new Set();
+const drawOne=(o,t)=>o.fn(G(o.ctx),t,Math.floor(t*6));
+canvases.forEach(o=>{const card=o.c.closest('.card');
+  const on=()=>{active.add(o)},off=()=>{active.delete(o);drawOne(o,STILL)};
+  card.addEventListener('mouseenter',on);card.addEventListener('mouseleave',off);
+  card.addEventListener('focusin',on);card.addEventListener('focusout',off)});
+function drawAll(){canvases.forEach(o=>drawOne(o,STILL))}
+let last=0,t0=0;
+function loop(ms){if(ms-last>110){last=ms;active.forEach(o=>drawOne(o,STILL+ms/1000))}requestAnimationFrame(loop)}
+
+/* ---------------- colour ---------------- */
+const gate=document.getElementById('gate');
+function setHue(h){
+  hue=((Math.round(h)%360)+360)%360;const c=(hue+180)%360;
+  root.style.setProperty('--h',hue);
+  wheel.setAttribute('aria-valuenow',hue);
+  PAL=makePal(hue);drawWheel();drawMe();drawAll(performance.now()/1000,true);
+}
+function fromPointer(e){const r=wheel.getBoundingClientRect();const dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);
+  setHue(Math.atan2(dx,-dy)*180/Math.PI)}
+let drag=false;
+wheel.addEventListener('pointerdown',e=>{drag=true;wheel.setPointerCapture(e.pointerId);fromPointer(e)});
+wheel.addEventListener('pointermove',e=>{if(drag)fromPointer(e)});
+wheel.addEventListener('pointerup',()=>drag=false);
+wheel.addEventListener('pointercancel',()=>drag=false);
+wheel.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowUp'){setHue(hue+6);e.preventDefault()}
+  else if(e.key==='ArrowLeft'||e.key==='ArrowDown'){setHue(hue-6);e.preventDefault()}
+  else if(e.key==='Enter'){enter()}
+});
+function enter(){try{localStorage.setItem('sg-hue',hue)}catch(e){}gate.classList.add('gone');document.body.classList.remove('locked');}
+function openGate(){gate.classList.remove('gone');document.body.classList.add('locked');wheel.focus()}
+document.getElementById('enter').addEventListener('click',enter);
+document.getElementById('surprise').addEventListener('click',()=>setHue(Math.random()*360));
+document.getElementById('recolour').addEventListener('click',openGate);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!gate.classList.contains('gone'))enter()});
+
+document.body.classList.add('locked');
+setHue(hue);
+if(!reduce)requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
