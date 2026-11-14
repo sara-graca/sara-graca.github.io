@@ -332,6 +332,7 @@ try{const s=localStorage.getItem('sg-hue');if(s!==null&&!isNaN(+s))hue=+s}catch(
 const P=[
  {n:'deepfake_detection',url:'https://github.com/sara-graca/audio-deepfake-detection',d:'Detecting AI-generated Portuguese speech.',l:'Python',art:'deepfake',alt:'A robot in a fake nose and moustache, caught by a magnifying glass.'},
  {n:'rag-pipeline',d:'RAG system over PDFs and SQL data, with a chatbot and evaluation.',l:'Python',art:'rag',alt:'A bookshelf, a database and a chat bubble, with a book flying to the answer.'},
+ {n:'wiktionary-hypersense-llm',d:'Sorting French word senses into semantic classes with an LLM: in-context learning vs QLoRA fine-tuning.',l:'Jupyter',art:'senses',alt:'A dictionary card dropping into one of three coloured bins.'},
  {n:'mBERT-language-neurons',d:'Looking for language-specific neurons in mBERT.',l:'Jupyter',art:'neurons',alt:'A grid of neurons; different ones light up for each language.'},
  {n:'vowel-statistical-analysis',d:'Statistics on vowel systems across the world’s languages.',l:'Jupyter',art:'vowels',alt:'Vowels plotted on the vowel trapezoid.'},
  {n:'lowresource-xlsr-finetune',d:'Fine-tuning XLS-R for speech recognition in Thulung and Japhug, two low-resource languages.',l:'Python',art:'hungry',alt:'A hungry robot with a fork, dreaming of data, facing a plate with one crumb.'},
@@ -344,17 +345,17 @@ const P=[
  {n:'poetry-transformer-decoder',d:'A small GPT that writes Victorian poetry.',l:'Jupyter',art:'poet',alt:'A quill writing on a page next to a top hat.'},
  {n:'phoneme-asr-noise-robustness',d:'How well phoneme recognition holds up under noise.',l:'Python',art:'umbrella',alt:'An ear sheltering under an umbrella from falling noise.'}
 ];
-const NAMES={'deepfake_detection':'Audio deepfake detection','rag-pipeline':'RAG pipeline','mBERT-language-neurons':'mBERT language neurons','vowel-statistical-analysis':'Vowel statistical analysis',
+const NAMES={'deepfake_detection':'Audio deepfake detection','rag-pipeline':'RAG pipeline','wiktionary-hypersense-llm':'Word sense classification','mBERT-language-neurons':'mBERT language neurons','vowel-statistical-analysis':'Vowel statistical analysis',
  'lowresource-xlsr-finetune':'Lowresource XLS-R finetune','elan-pangloss':'ELAN–Pangloss converters','mBERT-fine-tuning':'mBERT fine-tuning',
  'dyck-language-transformer':'Dyck language transformer','acoustic-vs-neural-representations':'Acoustic vs neural representations',
  'numerical-stability':'Numerical stability','parallel-vocab-distribution':'Parallel vocab distribution',
  'poetry-transformer-decoder':'Poetry transformer decoder','phoneme-asr-noise-robustness':'Phoneme ASR noise robustness'};
-const ORDER=['lowresource-xlsr-finetune','elan-pangloss','deepfake_detection','rag-pipeline','mBERT-language-neurons','phoneme-asr-noise-robustness','acoustic-vs-neural-representations',
+const ORDER=['lowresource-xlsr-finetune','elan-pangloss','deepfake_detection','rag-pipeline','wiktionary-hypersense-llm','mBERT-language-neurons','phoneme-asr-noise-robustness','acoustic-vs-neural-representations',
  'mBERT-fine-tuning','poetry-transformer-decoder','numerical-stability','dyck-language-transformer','vowel-statistical-analysis','parallel-vocab-distribution'];
 P.sort((a,b)=>ORDER.indexOf(a.n)-ORDER.indexOf(b.n));
 const CATS=[['intern','Internship'],['team','Team'],['speech','Speech'],['text','Text'],['multi','Multilingual'],['stats','Statistics']];
 const TAGS={'lowresource-xlsr-finetune':['intern','speech'],'elan-pangloss':['intern','speech'],'deepfake_detection':['team','speech'],
- 'rag-pipeline':['team','text'],'mBERT-language-neurons':['text','multi'],'phoneme-asr-noise-robustness':['speech','multi'],
+ 'rag-pipeline':['team','text'],'wiktionary-hypersense-llm':['team','text'],'mBERT-language-neurons':['text','multi'],'phoneme-asr-noise-robustness':['speech','multi'],
  'acoustic-vs-neural-representations':['speech','stats'],'mBERT-fine-tuning':['text','multi'],'poetry-transformer-decoder':['text'],
  'numerical-stability':['speech','stats'],'dyck-language-transformer':['text'],'vowel-statistical-analysis':['multi','stats'],'parallel-vocab-distribution':['text','stats']};
 const CATN=Object.fromEntries(CATS);
@@ -443,6 +444,14 @@ const ART={
   g.r(5,8,12,16,'c');g.r(5,8,2,16,'C');g.r(9,12,6,1,'C');g.r(9,15,6,1,'C');g.r(9,18,4,1,'C');
   g.r(28,7,15,11,'w');g.r(30,18,3,2,'w');g.r(31,10,9,1,'g');g.r(31,13,6,1,'p');
   for(let i=0;i<4;i++)if((i+k)%4!==0)g.px(19+i*2,15,'q');
+ },
+ senses(g,t,k){
+  g.r(0,0,48,32,'K');
+  const B=[[3,'p'],[18,'c'],[33,'q']];
+  B.forEach(([x,c])=>{g.r(x,21,1,8,c);g.r(x+11,21,1,8,c);g.r(x,28,12,1,c);g.r(x+2,26,8,1,'k')});
+  const tgt=Math.floor(k/12)%3,f=Math.min((k%12)/8,1);
+  const x=Math.round(20+(B[tgt][0]+2-20)*f),y=Math.round(3+(21-3)*f);
+  g.r(x,y,8,5,'w');g.r(x+1,y+1,6,1,'g');g.r(x+1,y+3,4,1,B[tgt][1]);
  },
  neurons(g,t,k){
   g.r(0,0,48,32,'K');
